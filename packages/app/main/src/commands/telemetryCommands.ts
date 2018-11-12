@@ -31,9 +31,17 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-export * from './activityVisitor';
-export * from './constants';
-export * from './enums';
-export * from './paymentEncoder';
-export * from './types';
-export * from './utils';
+import { CommandRegistryImpl } from '@bfemulator/sdk-shared';
+import { SharedConstants } from '@bfemulator/app-shared';
+import { TelemetryService } from '../telemetry';
+
+/** Registers telemetry commands */
+export function registerCommands(commandRegistry: CommandRegistryImpl) {
+  const Commands = SharedConstants.Commands.Telemetry;
+
+  // ---------------------------------------------------------------------------
+  // Track event to App Insights
+  commandRegistry.registerCommand(Commands.TrackEvent, (name: string, properties?: { [key: string]: any }): any => {
+    TelemetryService.trackEvent(name, properties);
+  });
+}

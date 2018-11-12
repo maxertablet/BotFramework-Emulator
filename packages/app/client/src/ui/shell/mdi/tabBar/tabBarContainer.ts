@@ -38,6 +38,8 @@ import { splitTab, appendTab, setActiveTab, close } from '../../../../data/actio
 import { enable as enablePresentationMode } from '../../../../data/action/presentationActions';
 import { closeDocument } from '../../../../data/action/chatActions';
 import { getTabGroupForDocument } from '../../../../data/editorHelpers';
+import { CommandServiceImpl } from '../../../../platform/commands/commandServiceImpl';
+import { SharedConstants } from '@bfemulator/app-shared';
 
 const mapStateToProps = (state: RootState, ownProps: TabBarProps): TabBarProps => ({
   ...ownProps,
@@ -51,11 +53,16 @@ const mapStateToProps = (state: RootState, ownProps: TabBarProps): TabBarProps =
 });
 
 const mapDispatchToProps = (dispatch): TabBarProps => ({
-  splitTab: (contentType: string, documentId: string, srcEditorKey: string, destEditorKey: string) =>
-    dispatch(splitTab(contentType, documentId, srcEditorKey, destEditorKey)),
+  splitTab: (contentType: string, documentId: string, srcEditorKey: string, destEditorKey: string) => {
+    CommandServiceImpl.remoteCall(SharedConstants.Commands.Telemetry.TrackEvent, 'tabBar_splitTab');
+    dispatch(splitTab(contentType, documentId, srcEditorKey, destEditorKey));
+  },
   appendTab: (srcEditorKey: string, destEditorKey: string, tabId: string) =>
     dispatch(appendTab(srcEditorKey, destEditorKey, tabId)),
-  enablePresentationMode: () => dispatch(enablePresentationMode()),
+  enablePresentationMode: () => {
+    CommandServiceImpl.remoteCall(SharedConstants.Commands.Telemetry.TrackEvent, 'tabBar_presentationMode');
+    dispatch(enablePresentationMode());
+  },
   setActiveTab: (documentId: string) => dispatch(setActiveTab(documentId)),
   closeTab: (documentId: string) => {
     dispatch(close(getTabGroupForDocument(documentId), documentId));

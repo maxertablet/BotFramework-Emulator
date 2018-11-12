@@ -31,7 +31,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import { FrameworkSettings, newBot, newEndpoint, newNotification, SharedConstants } from '@bfemulator/app-shared';
+import {
+  FrameworkSettings,
+  newBot,
+  newEndpoint,
+  newNotification,
+  SharedConstants
+} from '@bfemulator/app-shared';
 import got from 'got';
 import { IEndpointService } from 'botframework-config/lib/schema';
 import {
@@ -50,6 +56,7 @@ import { getSettings } from './settingsData/store';
 import { emulator } from './emulator';
 import { getStore } from './botData/store';
 import { sendNotificationToClient } from './utils/sendNotificationToClient';
+import { TelemetryService } from './telemetry';
 
 enum ProtocolDomains {
   livechat,
@@ -159,6 +166,7 @@ export const ProtocolHandler = new class ProtocolHandlerImpl implements Protocol
     switch (ProtocolTranscriptActions[protocol.action]) {
       case ProtocolTranscriptActions.open:
         this.openTranscript(protocol);
+        TelemetryService.trackEvent('transcriptFile_open', { method: 'protocol' });
         break;
 
       default:
@@ -170,6 +178,7 @@ export const ProtocolHandler = new class ProtocolHandlerImpl implements Protocol
     switch (ProtocolBotActions[protocol.action]) {
       case ProtocolBotActions.open:
         this.openBot(protocol);
+        TelemetryService.trackEvent('bot_open', { method: 'protocol' });
         break;
 
       default:

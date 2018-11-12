@@ -1,4 +1,3 @@
-import LogLevel from '@bfemulator/emulator-core/lib/types/log/level';
 //
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
@@ -31,8 +30,10 @@ import LogLevel from '@bfemulator/emulator-core/lib/types/log/level';
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+
 // Cheating here and pulling in a module from node. Can be easily replaced if we ever move the emulator to the web.
 import { logEntry, textItem } from '@bfemulator/emulator-core/lib/types/log/util';
+import LogLevel from '@bfemulator/emulator-core/lib/types/log/level';
 import { ExtensionInspector, InspectorAccessory, InspectorAccessoryState } from '@bfemulator/sdk-shared';
 import { Spinner } from '@bfemulator/ui-react';
 import { IBotConfiguration } from 'botframework-config/lib/schema';
@@ -64,6 +65,7 @@ interface InspectorProps {
   themeInfo: { themeName: string, themeComponents: string[] };
   activeBot?: IBotConfiguration;
   botHash?: string;
+  trackEvent?: (name: string, properties?: { [key: string]: any }) => void;
 }
 
 interface InspectorState {
@@ -341,6 +343,13 @@ export class Inspector extends React.Component<InspectorProps, InspectorState> {
         const inspectorName = this._state.titleOverride || this.state.inspector.name || 'inspector';
         const text = `[${inspectorName}] ${event.args[0]}`;
         LogService.logToDocument(documentId, logEntry(textItem(logLevel, text)));
+        break;
+
+      // record a telemetry from extension
+      case 'track-event':
+        const eventName = event.args[0];
+        const eventProperties = event.args[1] || {};
+        this.props.trackEvent(eventName, eventProperties);
         break;
 
       default:

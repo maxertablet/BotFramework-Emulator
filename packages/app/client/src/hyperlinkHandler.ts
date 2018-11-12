@@ -39,6 +39,7 @@ import * as URL from 'url';
 import { SharedConstants } from '@bfemulator/app-shared';
 
 export function navigate(url: string) {
+  const { TrackEvent } = SharedConstants.Commands.Telemetry;
   try {
     const parsed = URL.parse(url) || { protocol: '' };
     if ((parsed.protocol || '').startsWith('oauth:')) {
@@ -46,9 +47,11 @@ export function navigate(url: string) {
     } else if (parsed.protocol.startsWith('oauthlink:')) {
       navigateOAuthUrl(url.substring(12));
     } else {
+      CommandServiceImpl.remoteCall(TrackEvent, 'app_openLink', { url });
       shell.openExternal(url, { activate: true });
     }
   } catch (e) {
+    CommandServiceImpl.remoteCall(TrackEvent, 'app_openLink', { url });
     shell.openExternal(url, { activate: true });
   }
 }

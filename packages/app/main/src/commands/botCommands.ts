@@ -32,7 +32,12 @@
 //
 
 import { BotInfo, getBotDisplayName, SharedConstants } from '@bfemulator/app-shared';
-import { BotConfigWithPath, CommandRegistryImpl, mergeEndpoints, uniqueId } from '@bfemulator/sdk-shared';
+import {
+  BotConfigWithPath,
+  CommandRegistryImpl,
+  mergeEndpoints,
+  uniqueId
+} from '@bfemulator/sdk-shared';
 import { BotConfigurationBase } from 'botframework-config/lib';
 import { IConnectedService, IEndpointService, ServiceTypes } from 'botframework-config/lib/schema';
 import * as path from 'path';
@@ -52,6 +57,7 @@ import {
 import { emulator } from '../emulator';
 import { mainWindow } from '../main';
 import { botProjectFileWatcher, chatWatcher, transcriptsWatcher } from '../watchers';
+import { TelemetryService } from '../telemetry';
 
 /** Registers bot commands */
 export function registerCommands(commandRegistry: CommandRegistryImpl) {
@@ -81,6 +87,8 @@ export function registerCommands(commandRegistry: CommandRegistryImpl) {
       throw e;
     }
 
+    const telemetryInfo = { path: bot.path, hasSecret: !!secret };
+    TelemetryService.trackEvent('bot_create', telemetryInfo);
     return bot;
   });
 
@@ -241,6 +249,7 @@ export function registerCommands(commandRegistry: CommandRegistryImpl) {
             throw new Error('serviceType does not match');
           }
           botConfig.connectService(service);
+          TelemetryService.trackEvent('service_add', { type: service.type });
         }
         try {
           await saveBot(botConfig);

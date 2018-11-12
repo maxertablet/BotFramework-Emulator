@@ -46,6 +46,7 @@ import { getStore as getSettingsStore } from '../settingsData/store';
 import { parseActivitiesFromChatFile, showSaveDialog, writeFile } from '../utils';
 import { cleanupId as cleanupActivityChannelAccountId, CustomActivity } from '../utils/conversation';
 import { botProjectFileWatcher } from '../watchers';
+import { TelemetryService } from '../telemetry';
 
 /** Registers emulator (actual conversation emulation logic) commands */
 export function registerCommands(commandRegistry: CommandRegistryImpl) {
@@ -102,6 +103,7 @@ export function registerCommands(commandRegistry: CommandRegistryImpl) {
       mkdirpSync(path.dirname(filename));
       const transcripts = await convo.getTranscript();
       writeFile(filename, transcripts);
+      TelemetryService.trackEvent('transcript_save');
     }
   });
 

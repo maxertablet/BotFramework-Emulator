@@ -32,8 +32,7 @@
 //
 import './fetchProxy';
 import * as Electron from 'electron';
-import { app, Menu, systemPreferences } from 'electron';
-
+import { app, systemPreferences } from 'electron';
 import { dispatch, getSettings, getStore as getSettingsStore } from './settingsData/store';
 import * as url from 'url';
 import * as path from 'path';
@@ -49,7 +48,13 @@ import { AppUpdater } from './appUpdater';
 import { UpdateInfo } from 'electron-updater';
 import { ProgressInfo } from 'builder-util-runtime';
 import { getStore } from './botData/store';
-import { newNotification, Notification, PersistentSettings, Settings, SharedConstants } from '@bfemulator/app-shared';
+import {
+  newNotification,
+  Notification,
+  PersistentSettings,
+  Settings,
+  SharedConstants
+} from '@bfemulator/app-shared';
 import { rememberBounds, rememberTheme } from './settingsData/actions/windowStateActions';
 import { Store } from 'redux';
 import { azureLoggedInUserChanged } from './settingsData/actions/azureAuthActions';
@@ -58,11 +63,17 @@ import { sendNotificationToClient } from './utils/sendNotificationToClient';
 import Users from '@bfemulator/emulator-core/lib/facility/users';
 import { openFileFromCommandLine } from './utils/openFileFromCommandLine';
 import { appendCustomUserAgent } from './appendCustomUserAgent';
+import { Protocol } from './constants';
+import { TelemetryService } from './telemetry';
 
 export let mainWindow: Window;
 export let windowManager: WindowManager;
 
+// start app startup timer
+const beginStartupTime = Date.now();
+
 const store = getStore();
+
 // -----------------------------------------------------------------------------
 
 (process as NodeJS.EventEmitter).on('uncaughtException', (error: Error) => {
@@ -417,6 +428,12 @@ const createMainWindow = async () => {
     saveSettings<PersistentSettings>('server.json', getSettings());
     Electron.app.quit();
   });
+
+  // log app startup time in seconds
+  const endStartupTime = Date.now();
+  const startupTime = (endStartupTime - beginStartupTime) / 1000;
+  const launchedByProtocol = process.argv.some(arg => arg.includes(Protocol));
+  TelemetryService.trackEvent('app_launch', { method: launchedByProtocol ? 'protocol' : 'binary', startupTime });
 };
 
 function loadMainPage() {

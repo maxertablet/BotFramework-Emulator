@@ -43,6 +43,7 @@ import { switchTheme } from '../data/action/themeActions';
 import { showWelcomePage } from '../data/editorHelpers';
 import { AzureAuthState } from '../data/reducer/azureAuthReducer';
 import { store } from '../data/store';
+import { CommandServiceImpl } from '../platform/commands/commandServiceImpl';
 import {
   AzureLoginFailedDialogContainer,
   AzureLoginPromptDialogContainer,
@@ -59,7 +60,7 @@ import {
 
 /** Register UI commands (toggling UI) */
 export function registerCommands(commandRegistry: CommandRegistry) {
-  const { UI } = SharedConstants.Commands;
+  const { UI, Telemetry } = SharedConstants.Commands;
 
   // ---------------------------------------------------------------------------
   // Shows the welcome page
@@ -113,6 +114,7 @@ export function registerCommands(commandRegistry: CommandRegistry) {
     }
     const themeComponents = Array.prototype.map.call(linkTags, link => link.href); // href is fully qualified
     store.dispatch(switchTheme(themeName, themeComponents));
+    CommandServiceImpl.remoteCall(Telemetry.TrackEvent, 'app_chooseTheme', { themeName });
   });
 
   // ---------------------------------------------------------------------------

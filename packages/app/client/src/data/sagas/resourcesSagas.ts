@@ -8,12 +8,18 @@ import {
   ResourcesAction
 } from '../action/resourcesAction';
 import { CommandServiceImpl } from '../../platform/commands/commandServiceImpl';
-import { BotInfo, isChatFile, isTranscriptFile, NotificationType, SharedConstants } from '@bfemulator/app-shared';
+import {
+  BotInfo,
+  isChatFile,
+  isTranscriptFile,
+  newNotification,
+  NotificationType,
+  SharedConstants
+} from '@bfemulator/app-shared';
 import { IFileService } from 'botframework-config/lib/schema';
 import { ComponentClass } from 'react';
 import { DialogService } from '../../ui/dialogs/service';
 import { beginAdd } from '../action/notificationActions';
-import { newNotification } from '@bfemulator/app-shared/built';
 
 function* openContextMenuForResource(action: ResourcesAction<IFileService>): IterableIterator<any> {
   const menuItems = [
@@ -77,11 +83,14 @@ function* doRename(action: ResourcesAction<IFileService>) {
 
 function* doOpenResource(action: ResourcesAction<IFileService>): IterableIterator<any> {
   const { OpenChatFile, OpenTranscript } = SharedConstants.Commands.Emulator;
+  const { TrackEvent } = SharedConstants.Commands.Telemetry;
   const { path } = action.payload;
   if (isChatFile(path)) {
     yield CommandServiceImpl.call(OpenChatFile, path, true);
+    CommandServiceImpl.remoteCall(TrackEvent, 'chatFile_open');
   } else if (isTranscriptFile(path)) {
     yield CommandServiceImpl.call(OpenTranscript, path);
+    CommandServiceImpl.remoteCall(TrackEvent, 'transcriptFile_open', { method: 'resources_pane' });
   }
   // unknown types just fall into the abyss
 }

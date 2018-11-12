@@ -150,6 +150,10 @@ export const SharedConstants = {
       PushClientAwareSettings: 'push-client-aware-settings'
     },
 
+    Telemetry: {
+      TrackEvent: 'telemetry:track-event'
+    },
+
     UI: {
       ShowWelcomePage: 'welcome-page:showExplorer',
       ShowBotCreationDialog: 'bot-creation:showExplorer',
@@ -168,7 +172,7 @@ export const SharedConstants = {
       ShowProgressIndicator: 'progress-indicator:show'
     }
   },
-    ContentTypes: {
-      CONTENT_TYPE_LIVE_CHAT: 'application/vnd.microsoft.bfemulator.document.livechat'
-    }
+  ContentTypes: {
+    CONTENT_TYPE_LIVE_CHAT: 'application/vnd.microsoft.bfemulator.document.livechat'
+  }
 };

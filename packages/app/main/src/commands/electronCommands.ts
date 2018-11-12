@@ -41,6 +41,7 @@ import { ContextMenuService } from '../services/contextMenuService';
 import { getStore } from '../botData/store';
 import { CommandRegistryImpl } from '@bfemulator/sdk-shared';
 import { SharedConstants } from '@bfemulator/app-shared';
+import { TelemetryService } from '../telemetry';
 
 const { shell } = Electron;
 
@@ -139,6 +140,7 @@ export function registerCommands(commandRegistry: CommandRegistryImpl) {
   // ---------------------------------------------------------------------------
   // Opens an external link
   commandRegistry.registerCommand(Commands.OpenExternal, (url: string) => {
+    TelemetryService.trackEvent('app_openLink', { url });
     shell.openExternal(url, { activate: true });
   });
 

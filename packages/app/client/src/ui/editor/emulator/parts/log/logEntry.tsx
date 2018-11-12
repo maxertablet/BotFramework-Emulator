@@ -54,6 +54,7 @@ export interface LogEntryProps {
   setInspectorObjects?: (...args: any[]) => void;
   reconnectNgrok?: () => void;
   showAppSettings?: () => void;
+  trackEvent?: (name: string, properties?: { [key: string]: any }) => void;
 }
 
 export class LogEntry extends React.Component<LogEntryProps> {
@@ -77,6 +78,7 @@ export class LogEntry extends React.Component<LogEntryProps> {
     if (obj.id) {
       this.props.document.selectedActivity$.next({ ...obj, showInInspector: true });
     }
+    this.props.trackEvent('log_inspectActivity', { type: obj.type || '' });
   }
 
   /** Highlights an activity in webchat (triggered by hover in log) */

@@ -5,6 +5,8 @@ import * as NavBarActions from '../../../data/action/navBarActions';
 import { RootState } from '../../../data/store';
 import * as ExplorerActions from '../../../data/action/explorerActions';
 import * as EditorActions from '../../../data/action/editorActions';
+import { CommandServiceImpl } from '../../../platform/commands/commandServiceImpl';
+import { SharedConstants } from '@bfemulator/app-shared';
 
 const mapStateToProps = (state: RootState): NavBarProps => ({
   notifications: state.notification.allIds,
@@ -22,6 +24,9 @@ const mapDispatchToProps = (dispatch): NavBarProps => ({
       isGlobal: true,
       meta: null
     }));
+  },
+  trackEvent: (name: string, properties?: { [key: string]: any }) => {
+    CommandServiceImpl.remoteCall(SharedConstants.Commands.Telemetry.TrackEvent, name, properties);
   }
 });
 

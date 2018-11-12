@@ -327,11 +327,13 @@ class EmulatorComponent extends React.Component<EmulatorProps, {}> {
 
   private onStartOverClick = async (option: string = RestartConversationOptions.NewUserId): Promise<void> => {
     const { NewUserId, SameUserId } = RestartConversationOptions;
+    const { TrackEvent } = SharedConstants.Commands.Telemetry;
     this.props.clearLog(this.props.document.documentId);
     this.props.setInspectorObjects(this.props.document.documentId, []);
 
     switch (option) {
       case NewUserId:
+        CommandServiceImpl.remoteCall(TrackEvent, 'conversation_restart', { userId: 'new' });
         const newUserId = uniqueIdv4();
         // set new user as current on emulator facilities side
         await CommandServiceImpl.remoteCall(SharedConstants.Commands.Emulator.SetCurrentUser, newUserId);
@@ -339,6 +341,7 @@ class EmulatorComponent extends React.Component<EmulatorProps, {}> {
         break;
 
       case SameUserId:
+        CommandServiceImpl.remoteCall(TrackEvent, 'conversation_restart', { userId: 'same' });
         this.startNewConversation();
         break;
 

@@ -36,6 +36,9 @@ import { Component } from 'react';
 import { Intent } from '../../Models/Intent';
 import { IntentInfo } from '../../Luis/IntentInfo';
 import * as styles from './IntentEditor.scss';
+import { InspectorHost } from '@bfemulator/sdk-client';
+
+let $host: InspectorHost = (window as any).host;
 
 const TraceIntentStatesKey: string = Symbol('PersistedTraceIntentStates').toString();
 
@@ -136,6 +139,7 @@ class IntentEditor extends Component<IntentEditorProps, IntentEditorState> {
     this.setAndPersistTraceIntentStates(currentTraceIntentStates);
     if (this.props.intentReassigner) {
       this.props.intentReassigner(newIntent, needsRetrain).catch();
+      $host.trackEvent('luis_reassignIntent');
     }
   }
 

@@ -33,6 +33,7 @@
 
 import { registerCommands as registerBotCommands } from './botCommands';
 import { registerCommands as registerClientInitCommands } from './clientInitCommands';
+import { registerCommands as registerLuisCommands } from './connectedServiceCommands';
 import { registerCommands as registerElectronCommands } from './electronCommands';
 import { registerCommands as registerEmulatorCommands } from './emulatorCommands';
 import { registerCommands as registerFileCommands } from './fileCommands';
@@ -40,19 +41,20 @@ import { registerCommands as registerNgrokCommands } from './ngrokCommands';
 import { registerCommands as registerAzureCommands } from './azureCommands';
 import { registerCommands as registerOAuthCommands } from './oauthCommands';
 import { registerCommands as registerSettingsCommands } from './settingsCommands';
-import { registerCommands as registerLuisCommands } from './connectedServiceCommands';
+import { registerCommands as registerTelemetryCommands } from './telemetryCommands';
 import { CommandRegistryImpl } from '@bfemulator/sdk-shared';
 
 /** Registers all commands */
 export function registerAllCommands(commandRegistry: CommandRegistryImpl) {
+  registerAzureCommands(commandRegistry);
   registerBotCommands(commandRegistry);
   registerClientInitCommands(commandRegistry);
   registerElectronCommands(commandRegistry);
   registerEmulatorCommands(commandRegistry);
   registerFileCommands(commandRegistry);
+  registerLuisCommands(commandRegistry);
   registerNgrokCommands(commandRegistry);
-  registerAzureCommands(commandRegistry);
   registerOAuthCommands(commandRegistry);
   registerSettingsCommands(commandRegistry);
-  registerLuisCommands(commandRegistry);
+  registerTelemetryCommands(commandRegistry);
 }
