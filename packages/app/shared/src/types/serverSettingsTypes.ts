@@ -53,6 +53,8 @@ export interface FrameworkSettings {
   autoUpdate?: boolean;
   // enables pre-release updates
   usePrereleases?: boolean;
+  // enables instrumentation
+  collectUsageData?: boolean;
 }
 
 export interface WindowStateSettings {
@@ -122,7 +124,8 @@ export const frameworkDefault: FrameworkSettings = {
   localhost: 'localhost',
   locale: '',
   usePrereleases: false,
-  autoUpdate: true
+  autoUpdate: true,
+  collectUsageData: true
 };
 
 export const windowStateDefault: WindowStateSettings = {
