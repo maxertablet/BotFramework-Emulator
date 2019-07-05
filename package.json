@@ -6,7 +6,9 @@
     "lint:fix": "lerna run lint:fix --no-bail",
     "start": "cd packages\\app\\client && npm run start",
     "test": "jest --no-cache",
-    "test:coveralls": "jest --runInBand --bail --coverage --coverageReporters=text-lcov | coveralls"
+    "test:coveralls": "jest --runInBand --bail --coverage --coverageReporters=text-lcov | coveralls",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -52,6 +54,8 @@
     ]
   },
   "dependencies": {
-    "lerna": "3.4.0"
-  }
+    "lerna": "3.4.0",
+    "snyk": "^1.192.0"
+  },
+  "snyk": true
 }
